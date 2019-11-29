@@ -1,0 +1,447 @@
+---
+title: "Is the prognostic value of primary tumor location in patients with KRAS and wild-type mutation different?: a systematic review and meta-analysis"
+author: 
+  - name          : "Michail Belias"
+    affiliation   : "1"
+    corresponding : yes    # Define only one corresponding author
+    address       : "Postal address"
+    email         : "michail.belias@radboudumc.nl"
+  - name          : "Antonis Margonis"
+    affiliation   : "1,2"
+date: "19/11/2019"
+abstract: |
+  **IMPORTANCE** 
+  Primary tumor location (PTL) is considered an important prognostic factor (PF) in patients with metastatic colorectal cancer. However, recent studies indicate that PTLs prognostic value (PV) may be different between patients with KRAS and wild-type mutation.
+  
+  **OBJECTIVE** 
+  
+  Our goal is to assess the prognostic role of PTL, in patients with metastatic colorectal cancer and with or without KRAS mutation.
+  
+  **METHODS**
+  
+  
+  **RESULTS**
+  
+  Our search resulted in a total of xxx potentially relevant studies. After screening the abstracts and excluding duplicates, we ended up with xx studies. After taking into consideration the full text we ended up 5 studies published from xxxx to xxxx, which were meta-analysed. The total number of patients was xxxx. Per study number of patients ranged from xx to xx (median). We show that the pooled hazard ratio for wild type tumor was 1.85(1.53,2.22), while for the RAS mutated 1.11(1.00,1.23). We show that the ratio of hazard ratios between wild type and RAS mutated patients was 1.68(1.02,2.75), indicating that the PV of PTL is different between type of tumors. 
+  
+  **CONCLUSIONS**
+  The prognostic value of PTL is different between wild type and RAS mutated tumors. 
+  
+  
+  
+  
+  We searched the PubMed, EMBASE,.... to identify studies for prospective or retrospective studies that show results on overall survival in patients with KRAS and wild-type mutations. Our study eligibility criteria were: the year of publication, design of study, the definition of left right tumor, reported overall survival, written in English.... etc. We performed 4 meta-analysis to assess the PV of PTL. In the first two meta-analyses we assessed t patients wild type and RAS mutated tumors and investigate their differences.
+header-includes:
+ \usepackage{float}
+ \usepackage{booktabs}
+ \usepackage{longtable}
+ \usepackage{array}
+ \usepackage{multirow}
+ \usepackage[table]{xcolor}
+ \usepackage{wrapfig}
+ \usepackage{float}
+ \floatplacement{figure}{H}
+output:
+ bookdown::html_document2:
+  df_print: paged
+  indent: true  
+ bookdown::pdf_document2:
+    fig_caption: yes
+    fig_crop: no
+    highlight: haddock
+    pandoc_args: -Fpandoc-crossref
+    toc: no
+    toc_depth: 3
+    number_sections: true
+    citation_package: none
+ bookdown::word_document2:
+  reference_docx: Style and bibliography/JAMA_Word_Template.docx
+  pandoc_args: ["-Fpandoc-crossref"]
+  toc: no
+  toc_depth: 3
+always_allow_html: yes
+link-citations: true
+sansfont : GFS Neohellenic
+bibliography: Style and bibliography/bibliography.bib
+csl:  Style and bibliography/JAMA.csl
+---
+
+```{r, echo=FALSE,warning=FALSE, message=FALSE}
+library(knitr)
+## General output of the chunks 
+opts_chunk$set(fig.path='Figs/',                # The path where to save the figures
+               echo=F,                          # Logical whether the chunck will be printed 
+               warning=FALSE,                   # Logical whether the warnings will be printed
+               message=FALSE,                   # Logical whether the messages will be printed
+               fig.pos = "H",                   # The position of the figures and tables
+               comment = "",                    # remove # in printed
+               fig.height=8,                    # The height of Figures 
+               fig.width=10                      # The width of Figures
+               )
+################################################
+
+options(knitr.table.format = "html")
+library(meta)
+library(tidyverse)
+```
+
+```{r eval=FALSE}
+
+Loupakis =  data.frame(
+  Authors =      c("Loupakis Cod12", "Loupakis Cod13","Loupakis (others)","Loupakis NRAS"),
+  RAS =          c( 1.07           ,  0.68           , 0.76              , 0.84 ),
+  `Lower_CI`=    c( 0.77           ,  0.32           , 0.32              , 0.27 ),
+  `Upper_CI`=    c( 1.48           ,  1.43           , 1.80              , 2.65 ), check.names = F
+) 
+
+
+### log-transform hazard ratios and compute standard error based on the
+Loupakis.logyi  <- log(Loupakis$RAS) 
+Loupakis.sei <- with(Loupakis, log(`Upper_CI`) - log(`Lower_CI`)) / (2*1.96)
+Loupakis.res <- metagen(TE = Loupakis.logyi, seTE =Loupakis.sei,
+                         studlab = Loupakis$Authors,comb.fixed = T,comb.random = T,method.tau = "EB" ) 
+
+
+
+
+Taieb =  data.frame(
+  Authors =          c("Taieb (RAS mutated)","Taieb (BRAF mutated)"),
+  RAS =              c( 1.01,                  0.84),
+  `Lower_CI`=    c( 0.77,                  0.46),
+  `Upper_CI`=    c( 1.33,                  1.55), check.names = F
+)
+
+
+### log-transform hazard ratios and compute standard error based on the
+Taieb.logyi  <- log(Taieb$RAS) 
+Taieb.sei <- with(Taieb, log(`Upper_CI`) - log(`Lower_CI`)) / (2*1.96)
+Taieb.res <- metagen(TE = Taieb.logyi, seTE =Taieb.sei,
+                         studlab = Taieb$Authors,comb.fixed = T,comb.random = T,method.tau = "EB" ) 
+
+
+
+
+Cremolini=  data.frame(
+  Authors =      c("Cremolini (RAS mutated)", "Cremolini(BRAF mutated)"),
+  RAS =          c( 1.19,                      1.17),
+  `Lower_CI`=    c( 0.85,                      0.50),
+  `Upper_CI`=    c( 1.65,                      2.75), check.names = F
+)
+
+
+### log-transform hazard ratios and compute standard error based on the
+Cremolini.logyi  <- log(Cremolini$RAS) 
+Cremolini.sei <- with(Cremolini, log(`Upper_CI`) - log(`Lower_CI`)) / (2*1.96)
+Cremolini.res <- metagen(TE = Cremolini.logyi, seTE =Cremolini.sei,
+                         studlab = Cremolini$Authors,comb.fixed = T,comb.random = T,method.tau = "EB" ) 
+
+
+
+forest(Cremolini.res, prediction = T,backtransf = T)
+
+
+```
+
+
+
+
+\newpage
+# Introduction
+
+
+**Rationale**
+Describe the rationale for the review in the context of what is already known.
+
+**Objective**
+Provide an explicit statement of questions being addressed with reference to participants, interventions, comparisons,
+outcomes, and study design (PICOS).
+
+
+\newpage
+# Methods
+
+
+We performed this systematic review and meta-analysis in accordance with PRISMA guidelines and the Cochrane Handbook for Systematic Reviews of Interventions. For this study no review protocol has been used. 
+
+
+## Information sources and search strategy 
+
+Studies included in this systematic review and meta-analysis were identified through searches of PubMed, EMBASE, ....(fill what you did). The search query consisted of the following terms: "Primary tumor location" OR "primary tumor site" OR "Colon" OR "Colorectal" OR "right or left site" OR "hazard ratio" "CoxPH"..... (fill). 
+
+## Eligibility criteria and study selection
+
+Subsequently, we considered only published retrospective or prospective studies satisfying the following eligibility criteria: 1) The location of the colorectal cancers was reported 2) overall survival reported 3) studies were publish in English (prolavainoyme na valoume kai Spanish na ftiaxoyme ton Giwrgo?) 4) in case of series of articles the most recent has been used. We excluded : 1) letters to the editor, commentary reviews, case reports, articles included in books, 2) studies comparing colon cancer with rectal cancer as in our definition rectal cancer has been included in left site tumors, 3) studies that reported only HR estimated with multivariable models.
+
+  One author (AM) conducted the search and selection of articles. The following information was extracted from each study by 2 authors (MB and AM): author, year of publication, number of patients, type of study, primary tumor location (left/right) and the following patients characteristics received therapy, baseline ECOG PS, the presentation of metastasis, site of metastasis, number of metastasis sites, KRAS NRAS and BRAF mutation, prior therapy, PN and PT classification previous adjuvant therapy information. 
+
+
+
+## Statistical analysis
+
+(Edw alloi xrisimopoioun aoristo kai alloi enestwta)
+
+
+For this analysis the aggregate logHRs along with their standard errors and/or 95% CIs, were pooled using both fixed and random effects models with empirical bias (EB) $\tau^2$ estimation method. Subsequently, we performed a subgroup analysis stratifying by tumor mutational status. In order to assess the difference of PTL's prognostic value between wild type and RAS mutated patients, we calculated their logHR difference [@Fisher_2011]. This logHR difference corresponds to the interaction of PTL with the mutation status of the tumor. For all meta-analysis, we report $I^2$ and Q heterogeneity estimates. In order to inform clinicians what effect is to be expected in future patients, we also report pooled estimate's 95% prediction intervals [@IntHout_2016] along with their 95% CI's. We used the Cochran’s test to assess the heterogeneity of included studies. For heterogeneity tests, p-values less than 0.05 were considered significant and logHR<0 [HR<1] implied better survival for patients with left PTL. We compared fixed and random effects pooled estimates for sensitivity analysis and in case of statistical significant heterogeneity, we investigated it through subgroup analysis stratifying by the design of studies. Influence Analysis was carried through leave one out meta-analysis, and we assessed the presence of publication bias through visual inspection of funnel plots and with the Begg-Mazumdar Kendall’s $\tau$ and Egger’s bias test. We use trim and fill approach to identify and correct for funnel plot asymmetry arising from publication bias. 
+
+
+## Statistical packages
+
+All analyses were performed in the statistical software `r R.Version()$version.string`. For data manipulation we used the **tidyverse** [@tidyverse] package and for the meta-analysis the **meta**[@meta] package.
+
+
+# Results
+
+```{r}
+# right vs. left colon
+
+Wild.Type.meta = data.frame(
+  
+Authors       = c("20050181","20050181","20020408","20020408","von Einem",   "Loupakis", "Taieb","Cremolini"),
+`Study design` =c("RCT"     , "RCT"    ,"RCT"     ,"RCT"     ,"Observational","Observational","RCT",  "RCT"),
+`Treament`     =c("Panitumumab + FOLFIRI","FOLFIRI","Panitumumab + BSC","BSC",
+                  "Cetuximab +  CAPIRI or CAPOX","?","Cetuximab with or Without FOLFOX",
+                  "FOLFIRI OR FOLFOXIRI plus bevacizumab" ## Cremolini
+                  ),
+state= rep("Wild Type", 8),
+`Effect size`=         c(2.01,   1.51,   1.89,   2.41,   2.38,   NA,   1.62,   1.72),
+`Lower_CI` =           c(1.29,   0.96,   0.95,   1.21,   1.49,   NA,   1.08,   1.03),
+`Upper_CI` =           c(3.13,   2.37,   3.76,   4.81,   4.00,   NA,   2.41,   2.85),
+`Number of patients` = c(181,    187,    58,     57,     95,     NA,   715 ,   124) , 
+Year =                           c(2014,   2014,   2014,   2014,   2014,   2018, 2017,2018),
+
+check.names = FALSE)
+
+
+
+
+RAS.mutated.meta = data.frame(
+Authors =     
+  c("PRIME","PRIME","PEAK","PEAK","20050181","20050181","20020408","20020408","von Einem","Loupakis","Taieb" ,"Cremolini"),
+`Study design` =
+  c("RCT","RCT","RCT","RCT","RCT","RCT","RCT","RCT","Observational","Observational","RCT","RCT"),
+`Treament`     =c("Panitumumab + FOLFOX","FOLFOX",
+                  "Panitumumab + FOLFOX","Bevacizumab + FOLFOX",
+                  "Panitumumab + FOLFIRI","FOLFIRI",
+                  "Panitumumab + BSC","BSC",
+                  "Cetuximab +  CAPIRI or CAPOX",
+                  "?","Cetuximab with or Without FOLFOX", 
+                  "Bevacizumab with FOLFOXIRI or FOLFORI"),
+state = rep("RAS mutation", 12),
+`Effect size`=
+  c(1.17   ,1.09   ,2.24  , 2.8  ,  0.84    , 1.46     ,  1.26   ,  1.6     ,  0.77     ,  0.95    , 0.98,   1.19),
+`Lower_CI` =  
+  c(0.85,   0.87   ,0.87  , 1.05 ,  0.63    , 1.09     ,  0.67   ,  0.95    ,  0.43     ,  0.72    , 0.76,   0.87),
+`Upper_CI` =  
+  c(1.61,   1.48   ,5.78  , 7.43 ,  1.11    , 1.96     ,  2.36   ,  2.68    ,  1.47     ,  1.46    , 1.26,   1.61),
+`Number of patients` = 
+  c(230     ,228    ,25    , 29   ,  259    , 260      ,   77    ,  98      ,  68       ,  518     , 1154,   234 ), 
+Year =  
+  c(2014    ,2014   ,2014  ,  2014, 2014    , 2014     ,  2014   ,  2014    ,  2014     , 2018     , 2017,   2018),
+check.names = FALSE)
+
+
+
+Combined.meta= full_join(Wild.Type.meta,RAS.mutated.meta)
+
+### log-transform hazard ratios and compute standard error based on the
+Combined.meta$logyi  <- log(Combined.meta$`Effect size`) 
+Combined.meta$logsei <- with(Combined.meta, log(`Upper_CI`) - log(`Lower_CI`)) / (2*1.96)
+
+Combined.meta.res <- metagen(data =Combined.meta, TE = logyi, seTE =logsei,
+                         studlab = Combined.meta$Authors,comb.fixed = T,comb.random = T,method.tau = "EB",sm="HR", 
+                         backtransf = T ) 
+
+
+```
+
+A total of xxx potentially relevant studies were reviewed (Figure 1) (edw tha valoume to flowchart). Among them, xx reported overall survival either using risk ratios, odds ratios, hazard ratios estimated in a multi-variable model or reported the prognostic value in wild type tumors only. Finally, 5 (isws perissoteres?) studies published from 2014 to 2019 reporting the prognostic value of PTL and reporting information of RAS mutation were analysed. The total number of patients was `r sum(Wild.Type.meta$'Number of patients',na.rm = T) + sum(RAS.mutated.meta$'Number of patients',na.rm = T)`. The total number of patients with wild type tumors was `r sum(Wild.Type.meta$'Number of patients',na.rm = T)`, while the total number of patients with RAS mutation was`r sum(RAS.mutated.meta$'Number of patients',na.rm = T)`, see Figure 2 for details on demographics and patient characteristics.
+
+(Kapou edw tha bei to excel)
+
+
+
+
+## Meta-analysis of overall survival
+
+
+We showed a high level of heterogeneity (`r paste(round(Combined.meta.res$I2*100,2), "%", "; p < 0.001")`) between studies. The pooled HR `r paste(round(exp(Combined.meta.res$TE.random),2), "[",round(exp(Combined.meta.res$lower.random),2), ",", round(exp(Combined.meta.res$upper.random),2) ,"]", sep= "")` indicating a higher hazard rate for patient with right tumors. 
+
+
+```{r Overallplot, fig.cap= "Forest Plot of 20 Studies assessing overall survival of left vs right site in patients With colon cancer"}
+forest(Combined.meta.res, prediction = T, overall = T, 
+  leftcols =     c("studlab","TE","seTE","ci"), 
+  leftlabs =     c("Author",	"logHR",	"logHR (SE)","95% CI"), 
+  rightcols =    c("w.fixed",	"w.random"), 
+  rightlabs =    c("95% CI"), 
+  print.I2 =T, print.I2.ci = T, print.tau2 = T, print.Q = T, print.pval.Q = T, 
+  smlab = "Hazard ratio")
+```
+
+
+## Subgroup analysis
+
+```{r}
+
+rm(list=ls()[ls() %in% c("Combined.meta.res","Combined.meta")])
+
+
+### log-transform hazard ratios and compute standard error based on the
+Wild.Type.meta$logyi  <- log(Wild.Type.meta$`Effect size`) 
+Wild.Type.meta$logsei <- with(Wild.Type.meta, log(`Upper_CI`) - log(`Lower_CI`)) / (2*1.96)
+Wild.Type.res <- metagen(data = Wild.Type.meta,TE = logyi, seTE =logsei,
+                         studlab = Wild.Type.meta$Authors,comb.fixed = T,comb.random = T,hakn = T,method.tau = "EB",sm="HR" ) 
+
+
+
+```
+
+```{r}
+### log-transform hazard ratios and compute standard error based on the
+RAS.mutated.meta$logyi  <- log(RAS.mutated.meta$`Effect size`) 
+RAS.mutated.meta$logsei <- with(RAS.mutated.meta, log(`Upper_CI`) - log(`Lower_CI`)) / (2*1.96)
+RAS.mutated.res <- metagen(data = RAS.mutated.meta, TE = logyi, seTE =logsei,
+                           studlab = Authors,comb.fixed = T,comb.random = T,hakn = T,method.tau = "EB",sm="HR"  )
+```
+
+
+
+
+The subgroup analysis performed according to the mutational status of the tumor. Wild type tumors showed higher HRs `r paste(round(exp(Wild.Type.res$TE.random),2), "[",round(exp(Wild.Type.res$lower.random),2), ",", round(exp(Wild.Type.res$upper.random),2) ,"]", sep= "")` that in RAS mutated tumor data-sets`r paste(round(exp(RAS.mutated.res$TE.random),2), "[",round(exp(RAS.mutated.res$lower.random),2), ",", round(exp(RAS.mutated.res$upper.random),2) ,"]", sep= "")`. Although the pooled HR of RAS mutated tumors were not statistically significant we couldn't show equivalence of PTL in the level of 10%. 
+
+```{r}
+
+forest(Wild.Type.res, prediction = T,overall = T,
+  leftcols =     c("studlab","TE","seTE","ci"), 
+  leftlabs =     c("Author",	"logHR",	"logHR (SE)","95% CI"), 
+  rightcols =    c("w.fixed",	"w.random"), 
+  rightlabs =    c("95% CI"), 
+  print.I2 =T, print.I2.ci = T, print.tau2 = T, print.Q = T, print.pval.Q = T, 
+  smlab = "Hazard ratio")
+
+
+forest(RAS.mutated.res, prediction = T, overall = T,
+  leftcols =     c("studlab","TE","seTE","ci"), 
+  leftlabs =     c("Author",	"logHR",	"logHR (SE)","95% CI"), 
+  rightcols =    c("w.fixed",	"w.random"), 
+  rightlabs =    c("95% CI"), 
+  print.I2 =T, print.I2.ci = T, print.tau2 = T, print.Q = T, print.pval.Q = T, 
+  smlab = "Hazard ratio",lower.equi = 0.9, upper.equi = 1.1)
+
+
+funnel(RAS.mutated.res)
+```
+
+
+
+
+
+```{r}
+
+Interaction.meta =  data.frame(
+  Authors   = Wild.Type.meta$Authors,
+  "logyi"   = Wild.Type.meta$logyi - RAS.mutated.meta[RAS.mutated.meta$Authors %in% Wild.Type.meta$Authors,]$logyi,
+  "logsei"  = sqrt(Wild.Type.meta$logsei + RAS.mutated.meta[RAS.mutated.meta$Authors %in% Wild.Type.meta$Authors,]$logsei)
+)
+
+
+Interaction.meta.res =  metagen(data = Interaction.meta, TE = logyi, seTE = logsei,studlab = Authors, sm = "HR")
+
+```
+
+The logHR difference showed a statistically significant difference in the PTL HRs between wild type and RAS mutated tumors `r paste(round(exp(Interaction.meta.res$TE.random),2), "[",round(exp(Interaction.meta.res$lower.random),2), ",", round(exp(Interaction.meta.res$upper.random),2) ,"]", sep= "")`.
+
+
+
+```{r}
+forest(Interaction.meta.res, prediction = T, overall = T,
+  leftcols =     c("studlab","TE","seTE","ci"), 
+  leftlabs =     c("Author",	"logHR",	"logHR (SE)","95% CI"), 
+  rightcols =    c("w.fixed",	"w.random"), 
+  rightlabs =    c("95% CI"), 
+  print.I2 =T, print.I2.ci = T, print.tau2 = T, print.Q = T, print.pval.Q = T, 
+  smlab = "Hazard ratio")
+```
+
+
+## Influence analysis 
+
+For all three analyses mentioned above influence analysis showed no study with significant influence. 
+
+```{r Influence analyses}
+
+
+Wild.Type.inf =   metainf(Wild.Type.res)
+
+RAS.mutated.inf =   metainf(RAS.mutated.res)
+
+Interaction.inf =  metainf(Interaction.meta.res)
+
+par(mfrow=c(2,2))
+forest(Wild.Type.inf)
+forest(RAS.mutated.inf)
+forest(Interaction.inf)
+
+
+```
+
+
+## Publication bias
+
+The funnel plots and Egger test  did not indicate the existence of publication bias for wild type tumors . Trim and fill analysis also did not change the pooled estimates of the meta-analysis.
+
+
+```{r funnel, fig.cap="Funnel plots of: a) Wild type tumors b) RAS mutated tumors c) Interaction of wild type and RAS-mutated tumors with PTL"}
+dev.off()
+par(mfrow= c(2,2))
+funnel(Wild.Type.res)
+text("a)",x=3, y= 0.02)
+
+funnel(RAS.mutated.res)
+text("b)",x=3, y= 0.02)
+
+funnel(Interaction.meta.res)
+text("c)",x=3, y= 0.02)
+```
+
+
+```{r , fig.cap="Publication bias plots of: a) Wild type tumors b) RAS mutated tumors c) Interaction of wild type and RAS-mutated tumors with PTL"}
+
+par(mfrow= c(3,2))
+metabias(Wild.Type.res, method.bias = "linreg", plotit = TRUE,k.min = 7, correct = T)
+title("Egger's bias test")  
+text("a)",x=0, y= 0)
+metabias(Wild.Type.res, method.bias = "rank", plotit = TRUE,k.min = 7)
+title("Kendall's tau")
+text("a)",x=-0.95, y= 0.075)
+metabias(RAS.mutated.res, method.bias = "linreg", plotit = TRUE,k.min = 7, correct = T)
+text("b)",x=0, y= 0)
+metabias(RAS.mutated.res, method.bias = "rank", plotit = TRUE,k.min = 7)
+text("b)",x=-2, y= 0.15)
+metabias(Interaction.meta.res, method.bias = "linreg", plotit = TRUE,k.min = 7, correct = T)
+text("c)",x=0, y= 0)
+metabias(Interaction.meta.res, method.bias = "rank", plotit = TRUE,k.min = 7)
+text("c)",x=-0.8, y= 0.5)
+
+```
+
+
+
+
+
+
+
+\newpage
+
+
+
+
+
+
+
+
+# References
+
+
+
+
+
