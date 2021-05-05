@@ -157,22 +157,7 @@ outcomes, and study design (PICOS).
 
 
 \newpage
-# Methods
-
-
-We performed this systematic review and meta-analysis in accordance with PRISMA guidelines and the Cochrane Handbook for Systematic Reviews of Interventions. For this study no review protocol has been used. 
-
-
-## Information sources and search strategy 
-
-Studies included in this systematic review and meta-analysis were identified through searches of PubMed, EMBASE, ....(fill what you did). The search query consisted of the following terms: "Primary tumor location" OR "primary tumor site" OR "Colon" OR "Colorectal" OR "right or left site" OR "hazard ratio" "CoxPH"..... (fill). 
-
-## Eligibility criteria and study selection
-
-Subsequently, we considered only published retrospective or prospective studies satisfying the following eligibility criteria: 1) The location of the colorectal cancers was reported 2) overall survival reported 3) studies were publish in English (prolavainoyme na valoume kai Spanish na ftiaxoyme ton Giwrgo?) 4) in case of series of articles the most recent has been used. We excluded : 1) letters to the editor, commentary reviews, case reports, articles included in books, 2) studies comparing colon cancer with rectal cancer as in our definition rectal cancer has been included in left site tumors, 3) studies that reported only HR estimated with multivariable models.
-
-  One author (AM) conducted the search and selection of articles. The following information was extracted from each study by 2 authors (MB and AM): author, year of publication, number of patients, type of study, primary tumor location (left/right) and the following patients characteristics received therapy, baseline ECOG PS, the presentation of metastasis, site of metastasis, number of metastasis sites, KRAS NRAS and BRAF mutation, prior therapy, PN and PT classification previous adjuvant therapy information. 
-
+ no other exlusion criterion no other exlusion criterion no other exlusion criterion
 
 
 ## Statistical analysis
