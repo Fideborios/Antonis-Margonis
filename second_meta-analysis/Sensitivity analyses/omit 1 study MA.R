@@ -174,19 +174,19 @@ grid.text("Forest plot for KRAS*sideness interaction terms (Left includes Rectum
 
 #### Sensitivity analysis 
 
-Mat =  matrix(NA, nrow = 8,ncol = 4+3)
+Mat =  matrix(NA, nrow = 9,ncol = 4+3)
 Mat =  as.data.frame(Mat)
 names(Mat) =  c( "Study omited", "Wild Type (Random)", "Mutated (Random)", "Interaction terms (Random)",
                  "Wild Type (Fixed)", "Mutated (Fixed)", "Interaction terms (Fixed)")
 count= 1
 
-Mat[8,1] = "Overall pooled estimate"
-Mat[8,2] = round(exp(meta.WT$TE.random),2)
-Mat[8,3] = round(exp(meta.MT$TE.random),2)
-Mat[8,4] = round(exp(meta$TE.random),2)
-Mat[8,5] = round(exp(meta.WT$TE.fixed),2)
-Mat[8,6] = round(exp(meta.MT$TE.fixed),2)
-Mat[8,7] = round(exp(meta$TE.fixed),2)
+Mat[9,1] = "Overall pooled estimate"
+Mat[9,2] = round(exp(meta.WT$TE.random),2)
+Mat[9,3] = round(exp(meta.MT$TE.random),2)
+Mat[9,4] = round(exp(meta$TE.random),2)
+Mat[9,5] = round(exp(meta.WT$TE.fixed),2)
+Mat[9,6] = round(exp(meta.MT$TE.fixed),2)
+Mat[9,7] = round(exp(meta$TE.fixed),2)
 
 
 Mat
@@ -246,10 +246,10 @@ for(i in unique(Surv.model.with.Rectum.stratified.by.KRAS$Study)){
 }
 
 
-Mat
+sens = Mat[,-c(2,3,4)]
 
 
-write.csv(Mat,"second_meta-analysis/Sensitivity analyses/omit 1 study MA (with rectum).csv")
+write.csv(sens,"second_meta-analysis/Sensitivity analyses/omit 1 study MA (with rectum).csv")
 
 
 

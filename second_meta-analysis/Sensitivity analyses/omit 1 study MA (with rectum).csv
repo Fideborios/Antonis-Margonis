@@ -1,9 +1,10 @@
-Study omited,Wild Type (Random),Mutated (Random),Interaction terms (Random),Wild Type (Fixed),Mutated (Fixed),Interaction terms (Fixed)
-Chen,0.76,1.06,1.36,0.59,0.85,1.43
-De Santibanes,0.73,1.02,1.38,0.59,0.85,1.43
-French,0.71,1.04,1.44,0.59,0.84,1.44
-Gagniere,0.72,1.01,1.39,0.59,0.84,1.43
-Goffredo,0.77,1.07,1.37,0.76,1.07,1.37
-Margonis,0.74,1.03,1.37,0.59,0.84,1.43
-Wang,0.74,0.99,1.37,0.59,0.84,1.43
-Overall pooled estimate,0.74,1.03,1.38,0.59,0.85,1.43
+"","Study omited","Wild Type (Fixed)","Mutated (Fixed)","Interaction terms (Fixed)"
+"1","Chen",0.59,0.85,1.43
+"2","De Santibanes",0.59,0.85,1.43
+"3","French",0.59,0.84,1.44
+"4","Gagniere",0.59,0.84,1.43
+"5","Goffredo",0.75,1.06,1.37
+"6","Kim",0.59,0.85,1.43
+"7","Margonis",0.59,0.84,1.43
+"8","Wang",0.59,0.84,1.43
+"9","Overall pooled estimate",0.59,0.85,1.43

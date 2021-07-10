@@ -11,7 +11,7 @@ library(meta)
 
 rm(list=ls())
 
-#### Analysis with Rectum
+####### Analysis with Rectum ######
 
 IPD= read_xlsx("second_meta-analysis/IPD/Full IPD (light).xlsx",sheet = 1)
 
@@ -62,8 +62,19 @@ names(Wang)[names(Wang)=="Dead"] =  "Dead.5year"
 
 names(Wang); names(Data_set)
 
+Kim =      read.csv("second_meta-analysis/AD KM-plots/Kim/Simulated_data.csv"); 
 
-IPD=  rbind(Data_set, Margonis,Chen, Goffredo, Wang)
+names(Kim)[names(Kim)=="rightleft"] =  "Right left (with Rectum)"
+names(Kim)[names(Kim)=="Dead"] =  "Dead.5year"
+
+
+names(Kim); names(Data_set)
+
+
+
+
+
+IPD=  rbind(Data_set, Margonis,Chen, Goffredo, Wang,Kim)
 rm(list=ls()[! ls() %in% c("IPD")])
 
 
@@ -108,26 +119,44 @@ library(grid)
 grid.text("Forest plot for right vs left (with rectum) stratified by KRAS mutation", .5, 0.95, gp=gpar(cex=2))
 
 
+
 ### Crossvalidation code
 
 
-Right_Left.terms.meta.KRAS.WT = metagen(TE = Surv.model.with.Rectum.stratified.by.KRAS$Coefs.with.Rectum[c(1,3,5,7,9,11,13)],
-                                        seTE = Surv.model.with.Rectum.stratified.by.KRAS$Vcov.Coefs.without.Rectum[c(1,3,5,7,9,11,13)], sm="HR", 
-                                        method.tau = "EB")
+Right_Left.terms.meta.KRAS.WT = metagen(TE = Surv.model.with.Rectum.stratified.by.KRAS$Coefs.with.Rectum[c(1,3,5,7,9,11,13,15)],
+                                        seTE = Surv.model.with.Rectum.stratified.by.KRAS$Vcov.Coefs.without.Rectum[c(1,3,5,7,9,11,13,15)], sm="HR", 
+                                        method.tau = "EB",adhoc.hakn = "ci", hakn = T, 
+                                        studlab = unique(Surv.model.with.Rectum.stratified.by.KRAS$Study))
 
-forest(Right_Left.terms.meta.KRAS.WT, studlab = unique(IPD$Study), prediction = T)
+forest(Right_Left.terms.meta.KRAS.WT, prediction = T)
 grid.text("Forest plot for right vs left (with rectum) KRAS Wild type", .5, 0.95, gp=gpar(cex=2))
 
+Influence.Right_Left.terms.meta.KRAS.WT= metainf(Right_Left.terms.meta.KRAS.WT)
+forest(Influence.Right_Left.terms.meta.KRAS.WT )
+grid.text("Influence analysis (KRAS Wild type)", .5, 0.95, gp=gpar(cex=2))
 
 
 
-Right_Left.terms.meta.KRAS.MT = metagen(TE = Surv.model.with.Rectum.stratified.by.KRAS$Coefs.with.Rectum[c(2,4,6,8,10,12,14)], 
-                                        seTE = Surv.model.with.Rectum.stratified.by.KRAS$Vcov.Coefs.without.Rectum[c(2,4,6,8,10,12,14)], sm="HR", 
-                                        method.tau = "EB")
 
-forest(Right_Left.terms.meta.KRAS.MT, studlab = unique(IPD$Study), prediction = T)
+funnel(Right_Left.terms.meta.KRAS.WT,comb.fixed = T,studlab = T, comb.random = T, contour = c(0.9, 0.95, 0.99),
+       col.contour = c("darkgreen", "green", "lightgreen"),
+       lwd = 1, cex = 1, pch = 1,  cex.studlab = 1)
+
+metabias(Right_Left.terms.meta.KRAS.WT)
+
+
+
+Right_Left.terms.meta.KRAS.MT = metagen(TE = Surv.model.with.Rectum.stratified.by.KRAS$Coefs.with.Rectum[c(2,4,6,8,10,12,14,16)], 
+                                        seTE = Surv.model.with.Rectum.stratified.by.KRAS$Vcov.Coefs.without.Rectum[c(2,4,6,8,10,12,14,16)], sm="HR", 
+                                        method.tau = "EB", adhoc.hakn = "ci", hakn = T, 
+                                        studlab = unique(Surv.model.with.Rectum.stratified.by.KRAS$Study))
+
+forest(Right_Left.terms.meta.KRAS.MT, prediction = T)
 grid.text("Forest plot for right vs left (with rectum) KRAS mutated", .5, 0.95, gp=gpar(cex=2))
 
+Influence.Right_Left.terms.meta.KRAS.MT= metainf(Right_Left.terms.meta.KRAS.MT)
+forest(Influence.Right_Left.terms.meta.KRAS.MT )
+grid.text("Influence analysis (KRAS mutated)", .5, 0.95, gp=gpar(cex=2))
 
 
 rm(list=ls()[! ls() %in% c("IPD")])
@@ -159,14 +188,21 @@ meta = metagen(TE = Interaction.terms.with.Rectum, seTE = Interaction.Vcov.Coefs
                sm="HR",
                title = "Interaction terms (KRAS*Left)",
                overall = T, overall.hetstat = T,
-               tau.common =F,prediction = F,hakn = T, 
+               tau.common =F,prediction = F,hakn = T,adhoc.hakn = "ci", 
                method.tau = "EB", studlab = Study, 
                data = Surv.model.with.Rectum.interaction, 
-               print.byvar = T,adhoc.hakn = "ci")
+               print.byvar = T)
 
 
 forest(meta,  prediction = T)
 grid.text("Forest plot for KRAS*sideness interaction terms (Left includes Rectum tumours)", .5, 0.95, gp=gpar(cex=2))
+
+
+Influence.Interaction.terms= metainf(meta)
+forest(Influence.Interaction.terms )
+grid.text("Influence analysis (Interaction terms)", .5, 0.95, gp=gpar(cex=2))
+
+
 
 
 rm(list=ls()[! ls() %in% c("IPD")])
@@ -175,8 +211,8 @@ rm(list=ls()[! ls() %in% c("IPD")])
 
 
 
+####### Analysis without rectum ######
 
-### Analysis without rectum
 
 
 rm(list=ls()[! ls() %in% c("IPD")])
@@ -275,7 +311,7 @@ grid.text("Forest plot for right vs left (without rectum) stratified by KRAS mut
 
 Right_Left.terms.meta.KRAS.WT = metagen(TE = Surv.model.without.Rectum.stratified.by.KRAS$Coefs.with.Rectum[c(1,3,5,7,9,11)],
                                         seTE = Surv.model.without.Rectum.stratified.by.KRAS$Vcov.Coefs.without.Rectum[c(1,3,5,7,9,11)], sm="HR", 
-                                        method.tau = "EB")
+                                        adhoc.hakn = "ci", hakn = T, method.tau = "EB")
 
 forest(Right_Left.terms.meta.KRAS.WT, studlab = unique(IPD$Study), prediction = T)
 grid.text("Forest plot for right vs left (without rectum) KRAS wild type patients", .5, 0.95, gp=gpar(cex=2))
@@ -283,7 +319,7 @@ grid.text("Forest plot for right vs left (without rectum) KRAS wild type patient
 
 Right_Left.terms.meta.KRAS.MT = metagen(TE = Surv.model.without.Rectum.stratified.by.KRAS$Coefs.with.Rectum[c(2,4,6,8,10,12)], 
                                         seTE = Surv.model.without.Rectum.stratified.by.KRAS$Vcov.Coefs.without.Rectum[c(2,4,6,8,10,12)], sm="HR", 
-                                        method.tau = "EB")
+                                        adhoc.hakn = "ci", hakn = T, method.tau = "EB")
 
 forest(Right_Left.terms.meta.KRAS.MT, studlab = unique(IPD$Study), prediction = T)
 grid.text("Forest plot for right vs left (without rectum) KRAS mutated patients", .5, 0.95, gp=gpar(cex=2))
@@ -292,7 +328,7 @@ grid.text("Forest plot for right vs left (without rectum) KRAS mutated patients"
 ### Meta-analysis without Yamashita and De Santibanes
 Right_Left.terms.meta.KRAS.MT = metagen(TE = Surv.model.without.Rectum.stratified.by.KRAS$Coefs.with.Rectum[c(4,6,8,10)], 
                                         seTE = Surv.model.without.Rectum.stratified.by.KRAS$Vcov.Coefs.without.Rectum[c(4,6,8,10)], 
-                                        sm="HR", 
+                                        sm="HR", adhoc.hakn = "ci", hakn = T,
                                         method.tau = "EB")
 
 forest(Right_Left.terms.meta.KRAS.MT, studlab = unique(IPD$Study)[2:5], prediction = T)

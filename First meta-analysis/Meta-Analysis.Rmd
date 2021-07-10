@@ -101,23 +101,7 @@ Loupakis.res <- metagen(TE = Loupakis.logyi, seTE =Loupakis.sei,
                          studlab = Loupakis$Authors,comb.fixed = T,comb.random = T,method.tau = "EB" ) 
 
 
-
-
-Taieb =  data.frame(
-  Authors =          c("Taieb (RAS mutated)","Taieb (BRAF mutated)"),
-  RAS =              c( 1.01,                  0.84),
-  `Lower_CI`=    c( 0.77,                  0.46),
-  `Upper_CI`=    c( 1.33,                  1.55), check.names = F
-)
-
-
-### log-transform hazard ratios and compute standard error based on the
-Taieb.logyi  <- log(Taieb$RAS) 
-Taieb.sei <- with(Taieb, log(`Upper_CI`) - log(`Lower_CI`)) / (2*1.96)
-Taieb.res <- metagen(TE = Taieb.logyi, seTE =Taieb.sei,
-                         studlab = Taieb$Authors,comb.fixed = T,comb.random = T,method.tau = "EB" ) 
-
-
+forest(Loupakis.res, prediction = T,backtransf = T)
 
 
 Cremolini=  data.frame(
@@ -178,63 +162,331 @@ All analyses were performed in the statistical software `r R.Version()$version.s
 ```{r}
 # right vs. left colon
 
-Wild.Type.meta = data.frame(
+Wild.Type.DF = data.frame(
   
-Authors       = c("20050181","20050181","20020408","20020408","von Einem",   "Loupakis", "Taieb","Cremolini"),
-`Study design` =c("RCT"     , "RCT"    ,"RCT"     ,"RCT"     ,"Observational","Observational","RCT",  "RCT"),
-`Treament`     =c("Panitumumab + FOLFIRI","FOLFIRI","Panitumumab + BSC","BSC",
-                  "Cetuximab +  CAPIRI or CAPOX","?","Cetuximab with or Without FOLFOX",
-                  "FOLFIRI OR FOLFOXIRI plus bevacizumab" ## Cremolini
+Authors       = c("20050181",   #1
+                  "20050181",   #2
+                  "CRYSTAL",    #3
+                  "CRYSTAL",    #4
+                  "FIRE-3",     #5
+                  "FIRE-3",     #6
+                  "CALGB 80405",#7
+                  "CALGB 80405",#8
+                  "Prime",      #9
+                  "Prime",      #10
+                  "Peak",       #11
+                  "Peak",       #12
+                  "AIO KRK0104",#13
+                  "TRIBE",      #14
+                  "AIO KRK0207",#15
+                  "JACCRO CC-05/06", #16
+                  "MACRO-2+PLANET",#17
+                  "OPTIMOX3 DREAM",#18
+                  "Demurtas",   #19
+                  "Kamran",     #20
+                  "Fiala",      #21
+                  "Fiala",      #22
+                  "Uhlyarik",   #23
+                  "CAIRO-3"     #24
+                  ), 
+`Study design` =c("RCT",           #1
+                  "RCT",           #2
+                  "RCT",           #3
+                  "RCT",           #4
+                  "RCT",           #5
+                  "RCT",           #6
+                  "RCT",           #7
+                  "RCT",           #8
+                  "RCT",           #9
+                  "RCT",           #10
+                  "RCT",           #11
+                  "RCT",           #12
+                  "RCT",           #13
+                  "RCT",           #14
+                  "RCT",           #15
+                  "RCT",           #16
+                  "RCT",           #17
+                  "RCT",           #18
+                  "Observational", #19                  
+                  "Observational", #20
+                  "Observational", #21
+                  "Observational", #22
+                  "Observational", #23
+                  "RCT"            #24
                   ),
-state= rep("Wild Type", 8),
-`Effect size`=         c(2.01,   1.51,   1.89,   2.41,   2.38,   NA,   1.62,   1.72),
-`Lower_CI` =           c(1.29,   0.96,   0.95,   1.21,   1.49,   NA,   1.08,   1.03),
-`Upper_CI` =           c(3.13,   2.37,   3.76,   4.81,   4.00,   NA,   2.41,   2.85),
-`Number of patients` = c(181,    187,    58,     57,     95,     NA,   715 ,   124) , 
-Year =                           c(2014,   2014,   2014,   2014,   2014,   2018, 2017,2018),
+`Treament`     =c("Panitumumab + FOLFIRI",                  #1
+                  "FOLFIRI",                                #2
+                  "FOLFIRI",                                #3
+                  "FOLFIRI + cetuximab",                    #4
+                  "FOLFIRI + bevacizumab",                  #5
+                  "FOLFIRI + cetuximab",                    #6
+                  "FOLFIRI + bevacizumab",                  #7
+                  "FOLFIRI + cetuximab",                    #8
+                  "FOLFOX4",                                #9
+                  "FOLFOX4 + panitumumab",                  #10
+                  "FOLFOX6 + bevacizumab",                  #11
+                  "FOLFOX6 + panitumumab",                  #12
+                  "Cetuximab +  CAPIRI or CAPOX",           #13
+                  "FOLFIRI + bevacizumab",                  #14
+                  "FOLFIRI + bevacizumab",                  #15
+                  "FOLFIRI + cetuximab",                    #16
+                  "FOLFIRI + panitumumab/cetuximab",        #17
+                  "Chemotherapy + anti-EGFR/anti-VEGF",     #18
+                  "Chemotherapy + anti-EGFR/anti-VEGF",     #19
+                  "Chemotherapy + anti-EGFR/anti-VEGF",     #20
+                  "FOLFIRI + cetuximab/panitumumab",        #21
+                  "FOLFIRI + bevacizumab",                  #22
+                  "FOLFIRI + cetuximab",                    #23
+                  "CAPOX-B + cetuximab"                     #24
+
+                  ),
+`Subgroup Treatment`=  c("Chemotherapy + anti-EGFR",        #1
+                  "Chemotherapy alone",                     #2
+                  "Chemotherapy alone",                     #3
+                  "Chemotherapy + anti-EGFR",               #4
+                  "Chemotherapy + anti-VEGF",               #5
+                  "Chemotherapy + anti-EGFR",               #6
+                  "Chemotherapy + anti-VEGF",               #7
+                  "Chemotherapy + anti-EGFR",               #8
+                  "Chemotherapy alone",                     #9
+                  "Chemotherapy + anti-EGFR",               #10
+                  "Chemotherapy + anti-VEGF",               #11
+                  "Chemotherapy + anti-EGFR",               #12
+                  "Chemotherapy + anti-EGFR",               #13
+                  "Chemotherapy + anti-VEGF",               #14
+                  "Chemotherapy + anti-VEGF",               #15
+                  "Chemotherapy + anti-EGFR",               #16
+                  "Chemotherapy + anti-EGFR",               #17
+                  "Mixed therapies",                        #18
+                  "Mixed therapies",                        #19
+                  "Mixed therapies",                        #20
+                  "Chemotherapy + anti-EGFR",               #21
+                  "Chemotherapy + anti-VEGF",               #22
+                  "Chemotherapy + anti-EGFR",               #23
+                  "Chemotherapy + anti-EGFR"                #24
+                  ), 
+
+`KRAS status`= rep("Wild Type", 24),   
+##############   1    2       3       4      5     6     7     8     9    10   11     12    13    14     15
+`Effect size`=c(2.01,  1.51,  1.35,  1.93,  1.48, 2.84, 1.14, 1.82, 1.27, 1.58, 2.86,  2.68, 2.38, 1.72, 1.56,
+                        
+            ###  16     17     18     19    20    #?21    22   23   24
+                3.57,  2.00,  1.52,  2.83,  2.04, 2.29, 1.71, 2.01, 1.12),  
+`Lower_CI` =  c(1.29,  0.96,  0.93,  1.24,  1.02, 1.86, 0.80, 1.27, 0.88, 1.02, 1.40,  1.31,  1.49, 1.03,  1.06,
+                1.92,  1.42,  1.10,  1.40,  1.44, 1.46, 0.97, 1.40, 0.66),
+`Upper_CI` =  c(3.13,  2.37,  1.97,  2.99,  2.16, 4.33, 1.61,  2.56, 1.83, 2.45, 5.84,  5.46,  4.00, 2.85, 2.31, 
+                6.66,  3.33,  2.10,  5.60,  2.94, 3.62, 2.99, 3.16, 1.89),
+`Number of patients` = 
+              #  1        2     3     4      5     6     7     8     9    10    11   12   13  14   15   16  17
+              c(181,   187,  189,   175,   199 ,  195,  230,  244,  208,  208,  68,  75,  95, 124, 209, 110,261,
+              # 18    19    20  21   22  23   24
+                297,  88,  224, 108, 69, 97, 133 ), 
+              #  1     2     3     4      5     6    7      8    9      10    11    12     13    14   15     16   
+Year =        c(2014, 2014,  2009, 2009, 2014, 2014, 2014, 2014, 2010,  2010, 2014, 2014, 2014,2014, 2015, 2016,
+                #17           18    19    20    21    22    23    24
+                "2014-2017", 2015, 2017, 2018, 2019, 2019, 2018, 2017 ),
 
 check.names = FALSE)
 
 
+
+### log-transform hazard ratios and compute standard error based on the
+Wild.Type.DF$logyi  <- log(Wild.Type.DF$`Effect size`) 
+Wild.Type.DF$logsei <- with(Wild.Type.DF, log(`Upper_CI`) - log(`Lower_CI`)) / (2*1.96)
+
+library(meta)
+Wild.Type.meta.res <- metagen(data =Wild.Type.DF, TE = logyi, seTE =logsei,byvar = `KRAS status`,
+                         studlab = Wild.Type.DF$Authors,comb.fixed = T,comb.random = T,method.tau = "EB",sm="HR", 
+                         backtransf = T, hakn = T ) 
+
+forest(Wild.Type.meta.res)
+
+
+library(meta)
+Wild.Type.meta.res.by.sub <- metagen(data =Wild.Type.DF, TE = logyi, seTE =logsei,byvar = `Subgroup Treatment`,
+                         studlab = Wild.Type.DF$Authors,comb.fixed = T,comb.random = T,method.tau = "EB",sm="HR", 
+                         backtransf = T, hakn = T ) 
+
+forest(Wild.Type.meta.res.by.sub)
+
+
+
+
+Wild.Type.meta.res.RCT.only <- metagen(data =Wild.Type.DF[Wild.Type.DF$`Study design`=="RCT",], 
+                                       TE = logyi, seTE =logsei,
+                         studlab = Wild.Type.DF[Wild.Type.DF$`Study design`=="RCT",]$Authors,
+                         comb.fixed = T,comb.random = T,method.tau = "EB",sm="HR", 
+                         backtransf = T, hakn = T ) 
+
+forest(Wild.Type.meta.res.RCT.only)
+
+Wild.Type.meta.res.by.sub.RCT.only <- metagen(data =Wild.Type.DF[Wild.Type.DF$`Study design`=="RCT",], TE = logyi, seTE =logsei,byvar = `Subgroup Treatment`,
+                         studlab = Wild.Type.DF[Wild.Type.DF$`Study design`=="RCT",]$Authors,comb.fixed = T,comb.random = T,method.tau = "EB",sm="HR", 
+                         backtransf = T, hakn = T ) 
+
+forest(Wild.Type.meta.res.by.sub.RCT.only)
+
+
+
+sum(Wild.Type.DF$`Number of patients`)
+```
+
+
+```{r}
 
 
 RAS.mutated.meta = data.frame(
-Authors =     
-  c("PRIME","PRIME","PEAK","PEAK","20050181","20050181","20020408","20020408","von Einem","Loupakis","Taieb" ,"Cremolini"),
-`Study design` =
-  c("RCT","RCT","RCT","RCT","RCT","RCT","RCT","RCT","Observational","Observational","RCT","RCT"),
-`Treament`     =c("Panitumumab + FOLFOX","FOLFOX",
-                  "Panitumumab + FOLFOX","Bevacizumab + FOLFOX",
-                  "Panitumumab + FOLFIRI","FOLFIRI",
-                  "Panitumumab + BSC","BSC",
-                  "Cetuximab +  CAPIRI or CAPOX",
-                  "?","Cetuximab with or Without FOLFOX", 
-                  "Bevacizumab with FOLFOXIRI or FOLFORI"),
-state = rep("RAS mutation", 12),
-`Effect size`=
-  c(1.17   ,1.09   ,2.24  , 2.8  ,  0.84    , 1.46     ,  1.26   ,  1.6     ,  0.77     ,  0.95    , 0.98,   1.19),
-`Lower_CI` =  
-  c(0.85,   0.87   ,0.87  , 1.05 ,  0.63    , 1.09     ,  0.67   ,  0.95    ,  0.43     ,  0.72    , 0.76,   0.87),
-`Upper_CI` =  
-  c(1.61,   1.48   ,5.78  , 7.43 ,  1.11    , 1.96     ,  2.36   ,  2.68    ,  1.47     ,  1.46    , 1.26,   1.61),
-`Number of patients` = 
-  c(230     ,228    ,25    , 29   ,  259    , 260      ,   77    ,  98      ,  68       ,  518     , 1154,   234 ), 
-Year =  
-  c(2014    ,2014   ,2014  ,  2014, 2014    , 2014     ,  2014   ,  2014    ,  2014     , 2018     , 2017,   2018),
-check.names = FALSE)
+  Authors =     
+    c("PRIME",            #1
+      "PRIME",            #2   
+      "PEAK",             #3
+      "PEAK",             #4
+      "20050181",         #5
+      "20050181",         #6
+      "AIO KRK0104",      #7
+      "Loupakis",         #8
+      "TRIBE",            #9
+      "Kamran",           #10
+      "OPTIMOX3 DREAM",   #11
+      "CAIRO-3",          #12
+      "AIO KRK0207"       #13
+    ),
+  `Study design` =
+    c("RCT",           #1
+      "RCT",           #2
+      "RCT",           #3
+      "RCT",           #4
+      "RCT",           #5
+      "RCT",           #6
+      "RCT",           #7
+      "Observational", #8
+      "RCT",           #9
+      "Observational", #10
+      "RCT",           #11
+      "RCT",           #12
+      "RCT"            #13
+    ),
+  `Treament`     =c("FOLFOX + Panitumumab ",       #1
+                    "FOLFOX",                      #2
+                    "FOLFOX + Panitumumab",        #3
+                    "FOLFOX + Bevacizumab",        #4
+                    "FOLFIRI+ Panitumumab",        #5
+                    "FOLFIRI",                     #6
+                    "CAPIRI or CAPOX + Cetuximab", #7
+                    NA,                            #8
+                    "FOLFOX+ Bevacizumab",         #9
+                    "FOLFORI",                     #10
+                    "Mixed therapies",             #11
+                    "CAPOX-B + cetuximab",         #12
+                    "FOLFIRI + bevacizumab"        #13
+                    
+  ),
+  `Subgroup Treatment`=  c("Chemotherapy + anti-EGFR",        #1
+                           "Chemotherapy alone",                     #2
+                           "Chemotherapy + anti-EGFR",               #3
+                           "Chemotherapy + anti-VEGF",               #4
+                           "Chemotherapy + anti-EGFR",               #5
+                           "Chemotherapy alone",                     #6
+                           "Chemotherapy + anti-EGFR",               #7
+                           NA,                                       #8
+                           "Chemotherapy + anti-VEGF",               #9
+                           "Chemotherapy alone",                     #10
+                           "Mixed therapies",                        #11
+                           "Chemotherapy + anti-EGFR",               #12
+                           "Chemotherapy + anti-VEGF"                #13
+  ),
+  `KRAS status` = rep("RAS mutation", 13),
+  `Effect size`=
+    #   1     2     3     4      5     6      7      8      9      10     11    12     13 
+    c(1.17, 1.09, 2.24, 2.8,   0.84, 1.46,  1.3,   0.95,  1.19, 1.63,  1.56, 1.31,  1.06),
+  `Lower_CI` =  
+    c(0.85, 0.81, 0.87, 1.05,  0.63, 1.09,  0.68,  0.72, 0.85,  1.05,  1.10, 0.98,  0.81),
+  `Upper_CI` =  
+    c(1.61, 1.48, 5.78, 7.43,  1.11, 1.96,  2.34,  1.46, 1.65,  2.5,  2.21,  1.76,  1.4),
+  `Number of patients` = 
+    c(230,  228,  25,   29,    259,  260,   51,    494,   209,  143,   239,  233,   276), 
+  Year =  
+    c(2010, 2010, 2014, 2014,  2014, 2014,  2014, 2018,  2014,  2018,  2015, 2017,  2015),
+  check.names = FALSE)
 
 
 
-Combined.meta= full_join(Wild.Type.meta,RAS.mutated.meta)
+
+### log-transform hazard ratios and compute standard error based on the
+RAS.mutated.meta$logyi  <- log(RAS.mutated.meta$`Effect size`) 
+RAS.mutated.meta$logsei <- with(RAS.mutated.meta, log(`Upper_CI`) - log(`Lower_CI`)) / (2*1.96)
+
+library(meta)
+RAS.mutated.meta.res <- metagen(data =RAS.mutated.meta, TE = logyi, seTE =logsei,byvar = `KRAS status`,
+                                studlab = RAS.mutated.meta$Authors,comb.fixed = T,comb.random = T,method.tau = "EB",sm="HR", 
+                                backtransf = T, hakn = T ) 
+
+
+pdf("First meta-analysis/Figures/Figure 5.pdf", height = 15,10)
+
+forest(RAS.mutated.meta.res, prediction = T, overall = T, comb.fixed = T,comb.random = T,
+       leftcols =     c("studlab","TE","seTE","ci"),
+       leftlabs =     c("Author",	"logHR",	"logHR (SE)","95% CI"), 
+       rightcols =    c("w.fixed",	"w.random"), 
+       rightlabs =    c("95% CI"), 
+       print.I2 =F, print.I2.ci = F, print.tau2 = T, print.Q = T, print.pval.Q = T, 
+       smlab = "Hazard ratio")
+
+
+grid.text("Meta-analysis of right versus left (studies with KRAS mutated patients)", .5, .9, gp=gpar(cex=2))
+
+
+
+dev.off()
+
+
+
+
+RAS.mutated.meta.res.by.sub <- metagen(data =RAS.mutated.meta[!is.na(RAS.mutated.meta$`Subgroup Treatment`),], 
+                                       TE = logyi, seTE =logsei,byvar = `Subgroup Treatment`,
+                                       studlab = RAS.mutated.meta[!is.na(RAS.mutated.meta$`Subgroup Treatment`),]$Authors,
+                                       comb.fixed = T,comb.random = T,method.tau = "EB",sm="HR", 
+                                       backtransf = T) 
+
+
+
+
+
+pdf("First meta-analysis/Figures/Figure 6.pdf", height = 15,10)
+
+forest(RAS.mutated.meta.res.by.sub, prediction = T, overall = T, comb.fixed = T,comb.random = T,
+       leftcols =     c("studlab","TE","seTE","ci"),
+       leftlabs =     c("Author",	"logHR",	"logHR (SE)","95% CI"), 
+       rightcols =    c("w.fixed",	"w.random"), 
+       rightlabs =    c("95% CI"), 
+       print.I2 =F, print.I2.ci = F, print.tau2 = T, print.Q = T, print.pval.Q = T, 
+       smlab = "Hazard ratio")
+
+
+grid.text("Meta-analysis of right versus left (studies with KRAS mutated patients)", .5, .9, gp=gpar(cex=2))
+grid.text("stratified by type of treatment", .5, 0.88, gp=gpar(cex=2))
+
+
+
+dev.off()
+
+```
+
+
+
+
+```{r}
+Combined.meta= full_join(Wild.Type.DF,RAS.mutated.meta)
 
 ### log-transform hazard ratios and compute standard error based on the
 Combined.meta$logyi  <- log(Combined.meta$`Effect size`) 
 Combined.meta$logsei <- with(Combined.meta, log(`Upper_CI`) - log(`Lower_CI`)) / (2*1.96)
 
-Combined.meta.res <- metagen(data =Combined.meta, TE = logyi, seTE =logsei,
+Combined.meta.res <- metagen(data =Combined.meta, TE = logyi, seTE =logsei,byvar = `KRAS status`,
                          studlab = Combined.meta$Authors,comb.fixed = T,comb.random = T,method.tau = "EB",sm="HR", 
                          backtransf = T ) 
 
+forest(Combined.meta.res)
 
 ```
 
@@ -275,7 +527,13 @@ Wild.Type.meta$logsei <- with(Wild.Type.meta, log(`Upper_CI`) - log(`Lower_CI`))
 Wild.Type.res <- metagen(data = Wild.Type.meta,TE = logyi, seTE =logsei,
                          studlab = Wild.Type.meta$Authors,comb.fixed = T,comb.random = T,hakn = T,method.tau = "EB",sm="HR" ) 
 
-
+forest(Wild.Type.res, prediction = T, overall = T, 
+  leftcols =     c("studlab","TE","seTE","ci"), 
+  leftlabs =     c("Author",	"logHR",	"logHR (SE)","95% CI"), 
+  rightcols =    c("w.fixed",	"w.random"), 
+  rightlabs =    c("95% CI"), 
+  print.I2 =T, print.I2.ci = T, print.tau2 = T, print.Q = T, print.pval.Q = T, 
+  smlab = "Hazard ratio")
 
 ```
 
@@ -285,6 +543,16 @@ RAS.mutated.meta$logyi  <- log(RAS.mutated.meta$`Effect size`)
 RAS.mutated.meta$logsei <- with(RAS.mutated.meta, log(`Upper_CI`) - log(`Lower_CI`)) / (2*1.96)
 RAS.mutated.res <- metagen(data = RAS.mutated.meta, TE = logyi, seTE =logsei,
                            studlab = Authors,comb.fixed = T,comb.random = T,hakn = T,method.tau = "EB",sm="HR"  )
+
+
+forest(RAS.mutated.meta, prediction = T, overall = T, 
+  leftcols =     c("studlab","TE","seTE","ci"), 
+  leftlabs =     c("Author",	"logHR",	"logHR (SE)","95% CI"), 
+  rightcols =    c("w.fixed",	"w.random"), 
+  rightlabs =    c("95% CI"), 
+  print.I2 =T, print.I2.ci = T, print.tau2 = T, print.Q = T, print.pval.Q = T, 
+  smlab = "Hazard ratio")
+
 ```
 
 
