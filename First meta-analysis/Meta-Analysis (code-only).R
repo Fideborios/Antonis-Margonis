@@ -285,7 +285,7 @@ dev.off()
 
 sum(Wild.Type.DF$`Number of patients`)
 
-
+median(as.numeric(Wild.Type.DF$Year))
 
 ######################## RAS Mutated
 
@@ -368,7 +368,8 @@ RAS.mutated.meta = data.frame(
   check.names = FALSE)
 
 
-
+sum(RAS.mutated.meta$`Number of patients`)
+median(RAS.mutated.meta$Year)
 
 ### log-transform hazard ratios and compute standard error based on the
 RAS.mutated.meta$logyi  <- log(RAS.mutated.meta$`Effect size`) 
